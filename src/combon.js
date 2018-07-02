@@ -1,20 +1,23 @@
-/*   __ ___.                   *
- * _/  |\_ |__   ____   ____   *
- * \   __\ __ \ /  _ \ /    \  *
- *  |  | | \_\ (  <_> )   |  \ *
- *  |__| |___  /\____/|___|  / *
- *  (c) 2017 \/  toyboy    \/  */
+
+//   ___  _____  __  __  ____  _____  _  _
+//  / __)(  _  )(  \/  )(  _ \(  _  )( \( )
+// ( (__  )(_)(  )    (  ) _ < )(_)(  )  (
+//  \___)(_____)(_/\/\_)(____/(_____)(_)\_)
+//
+//         (c) 2017    toyboy
+//         (c) 2018 Jakob Guddas
+
 (function (root, mod) {
   if (typeof module === 'object' && module.exports) {
     module.exports = mod;
   } else if (typeof define === 'function' && define.amd) {
     define(function () { return mod; });
-  } else root.TBON = mod;
+  } else root.COMBON = mod;
 })(this, (function () {
-  function TBON() {};
+  function COMBON() {};
 
   var re = {
-    stringIllegal: /[:?!+^~`{[(|)\]}]/,
+    stringIllegal: /[:?!+^~,{[(|)\]}]/,
     controlEscape: /[\n\r\t\b\f"\\]/g,
     controlUnescape: /\\[nrtbf"\\]/g,
   };
@@ -22,10 +25,10 @@
   var isArray = Array.isArray, concat = Array.prototype.concat;
   var push = Array.prototype.push, ObjectKeys = Object.keys, splice = Array.prototype.splice;
 
-  TBON.parse = function (input, reviver) {
+  COMBON.parse = function (input, reviver) {
     if (!input || typeof input !== 'string') err('invalidInput');
 
-    var parse = /([":?!+^~`{[(|)\]}])/g, tbon = '' + input;
+    var parse = /([":?!+^~,{[(|)\]}])/g, combon = '' + input;
     var parent = [], node, m, pos = 0, part = key = objKey = '';
     var create = true, inArray = quoted = inString = false;
 
@@ -96,7 +99,7 @@
       }
       if (m && m.index) {
         var errPos = m.index - 60 < 0 ? m.index : 60;
-        msg += '\n' + tbon.substring(pos - errPos, m.index + 19) + '\n';
+        msg += '\n' + combon.substring(pos - errPos, m.index + 19) + '\n';
         msg += Array(61).join('-').substring(0, errPos) + '^\n';
       }
       throw Error(msg);
@@ -135,8 +138,8 @@
       closeNode(count);
     }
 
-    while (m = parse.exec(tbon)) {
-      if (tbon[m.index - 1] === '\\') continue;
+    while (m = parse.exec(combon)) {
+      if (combon[m.index - 1] === '\\') continue;
       if (m[1] === '"') {
         if (inString) quoted = true;
         inString = !inString;
@@ -145,7 +148,7 @@
 
       if (inString) continue;
 
-      part = quoted ? tbon.substring(pos + 1, m.index - 1) : tbon.substring(pos, m.index);
+      part = quoted ? combon.substring(pos + 1, m.index - 1) : combon.substring(pos, m.index);
 
       if (m[1] === '(') {        // Start Obj
         startNode();
@@ -166,7 +169,7 @@
         emptyNode({});
       } else if (m[1] === '^') { // Empty Array
         emptyNode([]);
-      } else if (m[1] === '`') { // Value-Key/Value separator
+      } else if (m[1] === ',') { // Value-Key/Value separator
         setValue(part, true);
       } else if (m[1] === ':') { // Key-String/Number separator
         key = part;
@@ -183,7 +186,7 @@
 
     if (!parent || parent.length > 0 || inString) err('endInput');
 
-    var m = quoted ? tbon.slice(pos + 1, -1) : tbon.slice(pos);
+    var m = quoted ? combon.slice(pos + 1, -1) : combon.slice(pos);
     if (m && m !== '') setValue(m, true);
 
     if (isArray(node) && node.length === 1) {
@@ -192,10 +195,10 @@
     return reviver ? revive(node, reviver) : node;
   };
 
-  TBON.stringify = function (obj, replacer) {
+  COMBON.stringify = function (obj, replacer) {
     if (obj === undefined) return undefined;
 
-    var tbon = [], start = 0, end = 0, pos = 0, four = 0, two = 0, one = 0, replacerFn = (typeof replacer === 'function');
+    var combon = [], start = 0, end = 0, pos = 0, four = 0, two = 0, one = 0, replacerFn = (typeof replacer === 'function');
 
     function isValue(t, n) {
       if (t === 'string') return true;
@@ -217,28 +220,28 @@
 
     function encodeParens(len, close) {
       if (len === 0) return;
-      pos = tbon.length - 1;
-      if (len === 1) push.call(tbon, close ? ')' : '(');
-      else if (len === 2) push.call(tbon, close ? ']' : '[');
+      pos = combon.length - 1;
+      if (len === 1) push.call(combon, close ? ')' : '(');
+      else if (len === 2) push.call(combon, close ? ']' : '[');
       else if (len === 3) {
-        if (close) push.call(tbon, ']', ')');
-        else push.call(tbon, '(', '[');
-      } else if (len === 4) push.call(tbon, close ? '}' : '{');
+        if (close) push.call(combon, ']', ')');
+        else push.call(combon, '(', '[');
+      } else if (len === 4) push.call(combon, close ? '}' : '{');
       else {
         four = len / 4 | 0;
         two = (len - four * 4) / 2 | 0;
         one = len - four * 4 - two * 2;
         if (!close) {
-          tbon = concat.call(tbon, (new Array(one + 1).join('(') + new Array(two + 1).join('[') +
+          combon = concat.call(combon, (new Array(one + 1).join('(') + new Array(two + 1).join('[') +
                                    new Array(four + 1).join('{')).split(''));
         } else {
-          tbon = concat.call(tbon, (new Array(four + 1).join('}') + new Array(two + 1).join(']') +
+          combon = concat.call(combon, (new Array(four + 1).join('}') + new Array(two + 1).join(']') +
                                    new Array(one + 1).join(')')).split(''));
         }
       }
       if (close) end = 0;
       else start = 0;
-      if (!close && tbon[pos] === ')' && tbon[pos + 1] === '(') splice.call(tbon, pos, 2, '|');
+      if (!close && combon[pos] === ')' && combon[pos + 1] === '(') splice.call(combon, pos, 2, '|');
     }
 
     function encodeValue(t, o, key) {
@@ -250,30 +253,30 @@
       if (key) encodeString(key);
       if (t === 'string') {
         if (o === '') {
-          push.call(tbon, ':');
+          push.call(combon, ':');
         } else if (o === '?' || o === '+' || o === '!' || !isNaN(+o)) {
-          if (key) push.call(tbon, ':');
-          push.call(tbon, '"' + o + '"');
+          if (key) push.call(combon, ':');
+          push.call(combon, '"' + o + '"');
         } else {
-          if (key) push.call(tbon, ':');
+          if (key) push.call(combon, ':');
           encodeString(o);
         }
       } else if (t === 'boolean') {
-        push.call(tbon, o ? '+' : '!');
+        push.call(combon, o ? '+' : '!');
       } else if (t === 'number') {
-        if (isNaN(o) || !isFinite(o)) push.call(tbon, '?');
-        else push.call(tbon, key ? ':' : null, o);
+        if (isNaN(o) || !isFinite(o)) push.call(combon, '?');
+        else push.call(combon, key ? ':' : null, o);
       } else if (o && o.toJSON) {
-        if (key) push.call(tbon, ':');
-        push.call(tbon, '"' + o.toJSON() + '"');
-      } else push.call(tbon, '?');
+        if (key) push.call(combon, ':');
+        push.call(combon, '"' + o.toJSON() + '"');
+      } else push.call(combon, '?');
     }
 
     function encodeString(str) {
       if (str.match(re.stringIllegal)) {
-        push.call(tbon, '"' + str.replace(re.controlEscape, escaper) + '"');
+        push.call(combon, '"' + str.replace(re.controlEscape, escaper) + '"');
       } else {
-        push.call(tbon, str.replace(re.controlEscape, escaper));
+        push.call(combon, str.replace(re.controlEscape, escaper));
       }
     }
 
@@ -293,13 +296,13 @@
           start--;
           if (end > 0) encodeParens(end, true);
           if (start > 0) encodeParens(start, false);
-          push.call(tbon, '^');
+          push.call(combon, '^');
           return;
         }
 
         for (var k = 0, lt, lo, t; k < len; k++) {
           t = typeof o[k];
-          if (lt && isValue(lt, lo) && !isSpecial(lt, lo)) push.call(tbon, '`');
+          if (lt && isValue(lt, lo) && !isSpecial(lt, lo)) push.call(combon, ',');
           if (walk(o[k], k, false, true)) {
             count++;
             lt = t;
@@ -313,7 +316,7 @@
           start--;
           if (end > 0) encodeParens(end, true);
           if (start > 0) encodeParens(start, false);
-          push.call(tbon, '~');
+          push.call(combon, '~');
           return;
         }
 
@@ -321,7 +324,7 @@
 
         for (k in keys) {
           t = typeof o[keys[k]];
-          if (lt && isValue(lt, lo) && !isSpecial(lt, lo)) push.call(tbon, '`');
+          if (lt && isValue(lt, lo) && !isSpecial(lt, lo)) push.call(combon, ',');
           if (end > 0) encodeParens(end, true);
           if (walk(o[keys[k]], keys[k], false, false)) {
             count++;
@@ -354,7 +357,7 @@
     walk(obj, '', !isValue(typeof obj), true);
     if (end > 0) encodeParens(end, true);
 
-    return tbon.join('');
+    return combon.join('');
   };
 
   function parseValue(val, forceString) {
@@ -413,6 +416,6 @@
     return walk(data);
   }
 
-  return TBON;
+  return COMBON;
 })());
 

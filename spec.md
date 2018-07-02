@@ -1,14 +1,14 @@
-###### TBON Version 1, mimetype application/x-tbon1
-# TBON Specification
-TBON is an efficient text based object serialization format, modelled after JSON but focusing on size instead of human readability.
+###### COMBON Version 1, mimetype application/x-combon1
+# COMBON Specification
+COMBON is an efficient text based object serialization format, modelled after JSON but focusing on size instead of human readability.
 
-TBON being text based is easier to parse than MessagePack but in some cases is not as efficient.
+COMBON being text based is easier to parse than MessagePack but in some cases is not as efficient.
 
-TBON is compatible with JSON, so stringify - parse cycle with TBON produces the same result as JSON.
+COMBON is compatible with JSON, so stringify - parse cycle with COMBON produces the same result as JSON.
 
 
 ## Format
-Like JSON, TBON supports Objects, Arrays, Strings, Booleans, Numbers and null.
+Like JSON, COMBON supports Objects, Arrays, Strings, Booleans, Numbers and null.
 
 Objects and Arrays start with "(", "[", "{" or "|" and end with "|", "}", "]" or "}".
 
@@ -30,7 +30,7 @@ Contains Key - Value pairs.
 
 Key is separated from Value by : if Value is String or Number, otherwise no separator is needed.
 
-Key - Value pairs are separated from each other by \` in case previous Value was a String or Number.
+Key - Value pairs are separated from each other by , in case previous Value was a String or Number.
 
 Empty Object is encoded as ~ without parentheses, brackets or braces.
 
@@ -38,7 +38,7 @@ Empty Object is encoded as ~ without parentheses, brackets or braces.
 ### Array
 Contains Values.
 
-Values are separated by \` in case previous Value was a String or Number.
+Values are separated by , in case previous Value was a String or Number.
 
 Empty Array is encoded as ^ without parentheses, brackets or braces.
 
@@ -50,7 +50,7 @@ Value may be Object, Array, String, Number, Boolean or null.
 ### String
 May contain any unicode character.
 
-Characters :?!+^~\`{[(|)]} need to be escaped with backslash (\\) or the whole String may be double quoted.
+Characters :?!+^~,{[(|)]} need to be escaped with backslash (\\) or the whole String may be double quoted.
 
 Double quotes ("), control characters (\\n\\b\\r\\f\\t) and backslash (\\) need to be escaped with a backslash (\\).
 
@@ -58,7 +58,7 @@ Double quotes ("), control characters (\\n\\b\\r\\f\\t) and backslash (\\) need 
 ### Number
 Numbers follow the same format as JSON.
 
-As TBON has only one way of storing Values, Strings that can be interpreted as numbers must be quoted.
+As COMBON has only one way of storing Values, Strings that can be interpreted as numbers must be quoted.
 
 
 ### Boolean / null

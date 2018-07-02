@@ -1,26 +1,27 @@
 {
-    "name": "tbon",
-    "version": "0.1.0",
-    "description": "TBON is an efficient text based object serialization format, modelled after JSON but focusing on size instead of human readability.",
+    "name": "combon",
+    "version": "0.0.0",
+    "description": "COMBON is an efficient text based object serialization format based on TBON.",
     "keywords": [
         "serialization",
         "serialize",
         "json",
         "parse",
         "stringify",
-        "tbon"
+        "tbon",
+        "combon"
     ],
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "https://github.com/empee/tbon.git"
+        "url": "https://github.com/jguddas/combon.git"
     },
-    "homepage": "https://github.com/empee/tbon",
+    "homepage": "https://github.com/jguddas/combon",
     "author": {
-        "name": "markus parkkonen",
-        "email": "markus.parkkonen@gmail.com"
+        "name": "Jakob Guddas",
+        "email": "jakob.guddas@openmailbox.org"
     },
-    "main": "src/tbon.js",
+    "main": "src/combon.js",
     "devDependencies": {
         "chai": "^3.5.x",
         "mocha": "^3.3.x"

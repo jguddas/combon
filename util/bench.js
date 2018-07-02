@@ -1,4 +1,4 @@
-var TBON = require('../');
+var COMBON = require('../');
 var msgpack = require('msgpack5')();
 var msgpackLite = require('msgpack-lite');
 var zlib = require('zlib');
@@ -91,12 +91,12 @@ function runJSON(input) {
   };
 }
 
-function runTBON(input, json) {
-  var tbon = TBON.stringify(input);
+function runCOMBON(input, json) {
+  var combon = COMBON.stringify(input);
   return {
-    bytes: new Buffer(tbon).length,
-    comp: zlib.deflateSync(tbon).length,
-    match: JSON.stringify(TBON.parse(tbon)) === json,
+    bytes: new Buffer(combon).length,
+    comp: zlib.deflateSync(combon).length,
+    match: JSON.stringify(COMBON.parse(combon)) === json,
   };
 }
 
@@ -111,13 +111,13 @@ function runMsgPack(input, json) {
 
 function runTest(input) {
   var json = runJSON(input);
-  var tbon = runTBON(input, json.json);
+  var combon = runCOMBON(input, json.json);
   var msgPack = runMsgPack(input, json.json);
-  return [json.bytes, json.comp, tbon.bytes, tbon.comp, tbon.match, msgPack.bytes, msgPack.comp, msgPack.match];
+  return [json.bytes, json.comp, combon.bytes, combon.comp, combon.match, msgPack.bytes, msgPack.comp, msgPack.match];
 }
 
 var totals = [0, 0, 0, 0, 0, 0, 0, 0];
-console.log('test\tjson\tdeflate\ttbon\tdeflate\tmatch\tmsgpack\tdeflate\tmatch');
+console.log('test\tjson\tdeflate\tcombon\tdeflate\tmatch\tmsgpack\tdeflate\tmatch');
 for (var i = 0; i <= tests.length; i++) {
   var test = tests[i] !== undefined ? tests[i] : tests;
   var res = runTest(test);
@@ -144,12 +144,12 @@ function runTimedTest(fn, param) {
 }
 
 console.log('\nEncode/Stringify operations / sec, * marks fastest');
-console.log('test ' + pad('tbon', 9) + pad('msgpack5', 9) + 'msgpack-lite');
+console.log('test ' + pad('combon', 9) + pad('msgpack5', 9) + 'msgpack-lite');
 for (var i = 0; i <= tests.length; i++) {
   var test = tests[i] !== undefined ? tests[i] : tests;
   var result = {
-    tbon: runTimedTest(function (obj) {
-      return TBON.stringify(obj).length;
+    combon: runTimedTest(function (obj) {
+      return COMBON.stringify(obj).length;
     }, test),
     msgpack: runTimedTest(function (obj) {
       return msgpack.encode(obj).length;
@@ -158,21 +158,21 @@ for (var i = 0; i <= tests.length; i++) {
       return msgpackLite.encode(obj).length;
     }, test),
   };
-  if (result.tbon > result.msgpack && result.tbon > result.msgpackLite) result.tbon += '*';
+  if (result.combon > result.msgpack && result.combon > result.msgpackLite) result.combon += '*';
   else if (result.msgpack > result.msgpackLite) result.msgpack += '*';
   else result.msgpackLite += '*';
 
-  console.log(pad(i, 5) + pad(result.tbon, 9) + pad(result.msgpack, 9) + result.msgpackLite);
+  console.log(pad(i, 5) + pad(result.combon, 9) + pad(result.msgpack, 9) + result.msgpackLite);
 }
 
 console.log('\nDecode/Parse operations / sec, * marks fastest');
-console.log('test ' + pad('tbon', 9) + pad('msgpack5', 9) + 'msgpack-lite');
+console.log('test ' + pad('combon', 9) + pad('msgpack5', 9) + 'msgpack-lite');
 for (var i = 0; i <= tests.length; i++) {
   var test = tests[i] !== undefined ? tests[i] : tests;
   var result = {
-    tbon: runTimedTest(function (obj) {
-      return TBON.parse(obj);
-    }, TBON.stringify(test)),
+    combon: runTimedTest(function (obj) {
+      return COMBON.parse(obj);
+    }, COMBON.stringify(test)),
     msgpack: runTimedTest(function (obj) {
       return msgpack.decode(obj);
     }, msgpack.encode(test)),
@@ -180,11 +180,11 @@ for (var i = 0; i <= tests.length; i++) {
       return msgpackLite.decode(obj);
     }, msgpackLite.encode(test)),
   };
-  if (result.tbon > result.msgpack && result.tbon > result.msgpackLite) result.tbon += '*';
+  if (result.combon > result.msgpack && result.combon > result.msgpackLite) result.combon += '*';
   else if (result.msgpack > result.msgpackLite) result.msgpack += '*';
   else result.msgpackLite += '*';
 
-  console.log(pad(i, 5) + pad(result.tbon, 9) + pad(result.msgpack, 9) + result.msgpackLite);
+  console.log(pad(i, 5) + pad(result.combon, 9) + pad(result.msgpack, 9) + result.msgpackLite);
 }
 
 function pad(str, len) {

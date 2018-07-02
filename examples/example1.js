@@ -1,4 +1,4 @@
-var TBON = require('../');
+var COMBON = require('../');
 
 function CustomObj(id, name, color) {
   this.id = id;
@@ -27,10 +27,10 @@ var data = {
   custom: new CustomObj('0100', 'John', 'Green'),
 };
 
-var str = TBON.stringify(data);
+var str = COMBON.stringify(data);
 console.log(str);
 
-var parsed = TBON.parse(str, revive);
+var parsed = COMBON.parse(str, revive);
 
 console.log(parsed);
 
