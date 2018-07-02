@@ -1,37 +1,42 @@
 {
-    "name": "combon",
-    "version": "0.0.0",
-    "description": "COMBON is an efficient text based object serialization format based on TBON.",
-    "keywords": [
-        "serialization",
-        "serialize",
-        "json",
-        "parse",
-        "stringify",
-        "tbon",
-        "combon"
-    ],
-    "license": "MIT",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/jguddas/combon.git"
-    },
-    "homepage": "https://github.com/jguddas/combon",
-    "author": {
-        "name": "Jakob Guddas",
-        "email": "jakob.guddas@openmailbox.org"
-    },
-    "main": "src/combon.js",
-    "devDependencies": {
-        "chai": "^3.5.x",
-        "mocha": "^3.3.x"
-    },
-    "engines": {
-        "node": ">=0.12.0"
-    },
-    "scripts": {
-        "bench": "node util/bench",
-        "test": "mocha tests/"
-    }
+  "name": "combon",
+  "version": "0.1.0",
+  "description": "COMBON is an efficient text based object serialization format based on TBON.",
+  "keywords": [
+    "serialization",
+    "serialize",
+    "json",
+    "parse",
+    "stringify",
+    "tbon",
+    "combon"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jguddas/combon.git"
+  },
+  "homepage": "https://github.com/jguddas/combon",
+  "author": {
+    "name": "Jakob Guddas",
+    "email": "jakob.guddas@openmailbox.org"
+  },
+  "main": "src/combon.js",
+  "devDependencies": {
+    "chai": "^3.5.x",
+    "mocha": "^3.3.x"
+  },
+  "engines": {
+    "node": ">=0.12.0"
+  },
+  "scripts": {
+    "bench": "node util/bench",
+    "test": "mocha tests/"
+  },
+  "files": [
+    "LICENSE",
+    "package.json",
+    "readme.md",
+    "src/combon.js"
+  ]
 }
-
